@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QTextEdit
 from PyQt5.QtCore import QVariantAnimation
 from operation import Task
 import datetime, time
+import speech_recognition as sr
 
 
 class AnimationTextEdit(QTextEdit):
@@ -26,6 +27,7 @@ class AnimationTextEdit(QTextEdit):
         self.verticalScrollBar().setValue(i)
 
 class Home_Form(object):
+    self.tick = False
     def setupUi(self, Form):
         Form.setObjectName("Windows Assistant")
         Form.resize(473, 128)
@@ -48,14 +50,14 @@ class Home_Form(object):
         self.tick_button.setIconSize(QtCore.QSize(25, 25))
         self.tick_button.setObjectName("tick_button")
         self.horizontalLayout.addWidget(self.tick_button)
-        # self.mic_button = QtWidgets.QPushButton(Form)
-        # self.mic_button.setText("")
-        # icon1 = QtGui.QIcon()
-        # icon1.addPixmap(QtGui.QPixmap("./Icons/blue_mic.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        # self.mic_button.setIcon(icon1)
-        # self.mic_button.setIconSize(QtCore.QSize(25, 25))
-        # self.mic_button.setObjectName("mic_button")
-        # self.horizontalLayout.addWidget(self.mic_button)
+        self.mic_button = QtWidgets.QPushButton(Form)
+        self.mic_button.setText("")
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap("./Icons/blue_mic.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.mic_button.setIcon(icon1)
+        self.mic_button.setIconSize(QtCore.QSize(25, 25))
+        self.mic_button.setObjectName("mic_button")
+        self.horizontalLayout.addWidget(self.mic_button)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.status_box = AnimationTextEdit(Form)
         self.status_box.setEnabled(True)
@@ -84,6 +86,7 @@ class Home_Form(object):
         
         # Button event
         self.tick_button.clicked.connect(self.read_input)
+        self.mic_button.clicked.connect(self.mic_on)
 
         #Shortcut
         Shortcut = QtWidgets.QShortcut(QtGui.QKeySequence('Return'),Form)
@@ -95,6 +98,7 @@ class Home_Form(object):
         self.status_box.startAnimation(self.status_box.getMax())
 
     def read_input(self):
+        self.tick = True
         text = self.input_box.text()
         if text == '':
             msg = QtWidgets.QMessageBox()
@@ -103,10 +107,53 @@ class Home_Form(object):
             msg.setWindowTitle('Warning')
             msg.exec_()
         else:
-            event = Task()
-            # print(text)
-            self.status_updater(event.do(text))
+            self.doTask(text)
+
+    def doTask(self, text):
+        event = Task()
+        if (self.tick):
+            if event.do(text) == None:
+                self.status_updater('Somthing Wrong in text.Try again')
+            else:
+                self.status_updater(event.do(text))
+        else:
+            if event.do(text) == None:
+                self.status_updater(event.do(text))
+            else:
+                self.status_updater("I don't understand it please tell properly")
+        self.tick = False
+                
+
             
+    def mic_on(self):
+        self.status_updater('listening....')
+        text = self.listen()
+        self.input_box.setText(text)
+        self.doTask(text)
+
+    def listen(self):
+
+        sample_rate = 48000
+
+        chunk_size = 2048
+
+        r = sr.Recognizer() 
+        
+        with sr.Microphone( sample_rate = sample_rate, chunk_size = chunk_size) as source: 
+            
+            r.adjust_for_ambient_noise(source) 
+            print ("Say Something")
+            audio = r.listen(source) 
+                
+            try: 
+                text = r.recognize_google(audio) 
+                return (text)
+            
+            except sr.UnknownValueError: 
+                return ("Google Speech Recognition could not understand audio") 
+            
+            except sr.RequestError as e: 
+                return("Could not request results from Google Speech Recognition service; {0}".format(e)) 
 
 if __name__ == "__main__":
     import sys

@@ -1,23 +1,25 @@
-import speech_recognition as sr
+import speech_recognition as sr 
+  
+def listen():
 
-microphone = sr.Microphone()
-r = sr.Recognizer()
-class listener:
-    def listen(self):
-        r = sr.Recognizer()
-    with sr.Microphone() as source:
-        print("Listening...")
-        r.pause_threshold = 1
-        audio = r.listen(source)
-        try:
-                print("Recognizing...")    
-                query = r.recognize_google(audio, language='en-in') 
-                print(f"User said: {query}\n")  
+    sample_rate = 48000
 
-            except Exception as e:
-                # print(e)    
-                print("Say that again please...")
-                return "None" 
-            return query
+    chunk_size = 2048
 
-       
+    r = sr.Recognizer() 
+    
+    with sr.Microphone( sample_rate = sample_rate, chunk_size = chunk_size) as source: 
+        
+        r.adjust_for_ambient_noise(source) 
+        print ("Say Something")
+        audio = r.listen(source) 
+            
+        try: 
+            text = r.recognize_google(audio) 
+            return (text)
+        
+        except sr.UnknownValueError: 
+            return ("Google Speech Recognition could not understand audio") 
+        
+        except sr.RequestError as e: 
+            return("Could not request results from Google Speech Recognition service; {0}".format(e)) 
