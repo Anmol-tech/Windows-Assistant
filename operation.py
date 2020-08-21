@@ -30,15 +30,22 @@ class Task:
                 return 'Starting powerpoint'
             elif 'brave' in text:
                 os.system('start brave')
-                return
+                return 'Starting Brave'
+                
             elif 'InternetExplorer'  in text:
                 os.system('start microsoftedge')
-                return
+                return 'Starting MicrosoftEdge'
             else:
-                return "I don't understand it please tell properly "
+                
+                return "I don't understand it please tell properly what to open ? \N{thinking face}"
         
         elif 'search' in text:
-            webbrowser.open_new_tab('http://www.google.com/search?btnG=1&q=%s' %text[-1])
-            return f'searching {text[-1]} on google '
+            text = text [1:]
+            text = ''.join([str(elem) for elem in text])
+            webbrowser.open_new_tab('http://www.google.com/search?btnG=1&q=%s' %text)
+            return f'searching {text[-1]} on google \N{Globe with Meridians}'
+        else:
+            return "Unable to do task \N{Disappointed face}"
+            
              
                 

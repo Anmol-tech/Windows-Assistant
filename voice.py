@@ -1,4 +1,4 @@
-import speech_recognition as sr 
+     
   
 def listen():
 
@@ -13,7 +13,7 @@ def listen():
         r.adjust_for_ambient_noise(source) 
         print ("Say Something")
         audio = r.listen(source) 
-            
+        
         try: 
             text = r.recognize_google(audio) 
             return (text)

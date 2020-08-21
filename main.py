@@ -27,8 +27,9 @@ class AnimationTextEdit(QTextEdit):
         self.verticalScrollBar().setValue(i)
 
 class Home_Form(object):
-    self.tick = False
     def setupUi(self, Form):
+
+        self.tick = False
         Form.setObjectName("Windows Assistant")
         Form.resize(473, 128)
         self.verticalLayout = QtWidgets.QVBoxLayout(Form)
@@ -91,6 +92,8 @@ class Home_Form(object):
         #Shortcut
         Shortcut = QtWidgets.QShortcut(QtGui.QKeySequence('Return'),Form)
         Shortcut.activated.connect(self.read_input)
+        Shortcut = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+m'),self.input_box)
+        Shortcut.activated.connect(self.mic_on)
 
     def status_updater(self,line):
         localtime = time.asctime( time.localtime(time.time()) )
@@ -111,28 +114,16 @@ class Home_Form(object):
 
     def doTask(self, text):
         event = Task()
-        if (self.tick):
-            if event.do(text) == None:
-                self.status_updater('Somthing Wrong in text.Try again')
-            else:
-                self.status_updater(event.do(text))
-        else:
-            if event.do(text) == None:
-                self.status_updater(event.do(text))
-            else:
-                self.status_updater("I don't understand it please tell properly")
-        self.tick = False
-                
-
-            
+        self.status_updater(event.do(text))
+        
     def mic_on(self):
-        self.status_updater('listening....')
+        # self.status_updater('listening....\n')
         text = self.listen()
         self.input_box.setText(text)
         self.doTask(text)
 
     def listen(self):
-
+        self.status_updater('listening....')
         sample_rate = 48000
 
         chunk_size = 2048
@@ -142,18 +133,34 @@ class Home_Form(object):
         with sr.Microphone( sample_rate = sample_rate, chunk_size = chunk_size) as source: 
             
             r.adjust_for_ambient_noise(source) 
+            
             print ("Say Something")
             audio = r.listen(source) 
                 
             try: 
                 text = r.recognize_google(audio) 
                 return (text)
-            
+                
             except sr.UnknownValueError: 
                 return ("Google Speech Recognition could not understand audio") 
+                
             
             except sr.RequestError as e: 
                 return("Could not request results from Google Speech Recognition service; {0}".format(e)) 
+                
+            finally:
+                self.backgroud(None,None)
+
+    def backgroud(self,rec_instance,text):
+        sample_rate = 48000
+
+        chunk_size = 2048
+
+        r = sr.Recognizer() 
+        mic = sr.Microphone( sample_rate = sample_rate, chunk_size = chunk_size)
+        if 
+        r.listen_in_background(mic,self.backgroud)
+        
 
 if __name__ == "__main__":
     import sys
