@@ -87,13 +87,13 @@ class Home_Form(object):
         
         # Button event
         self.tick_button.clicked.connect(self.read_input)
-        self.mic_button.clicked.connect(self.mic_on)
+        self.mic_button.clicked.connect(self.listen_update)
 
         #Shortcut
         Shortcut = QtWidgets.QShortcut(QtGui.QKeySequence('Return'),Form)
         Shortcut.activated.connect(self.read_input)
         Shortcut = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+m'),self.input_box)
-        Shortcut.activated.connect(self.mic_on)
+        Shortcut.activated.connect(self.listen_update)
 
     def status_updater(self,line):
         localtime = time.asctime( time.localtime(time.time()) )
@@ -115,15 +115,17 @@ class Home_Form(object):
     def doTask(self, text):
         event = Task()
         self.status_updater(event.do(text))
-        
+
+    def listen_update(self):
+        self.status_updater('listening....')    
+        self.mic_on()
+
     def mic_on(self):
-        # self.status_updater('listening....\n')
         text = self.listen()
         self.input_box.setText(text)
         self.doTask(text)
 
     def listen(self):
-        self.status_updater('listening....')
         sample_rate = 48000
 
         chunk_size = 2048
@@ -134,7 +136,8 @@ class Home_Form(object):
             
             r.adjust_for_ambient_noise(source) 
             
-            print ("Say Something")
+            
+            # print ("Say Something")
             audio = r.listen(source) 
                 
             try: 
@@ -148,18 +151,19 @@ class Home_Form(object):
             except sr.RequestError as e: 
                 return("Could not request results from Google Speech Recognition service; {0}".format(e)) 
                 
-            finally:
-                self.backgroud(None,None)
+            # finally:
+                # self.backgroud(None,None)
 
-    def backgroud(self,rec_instance,text):
-        sample_rate = 48000
+    # def backgroud(self,rec_instance,text):
+    #     sample_rate = 48000
 
-        chunk_size = 2048
+    #     chunk_size = 2048
 
-        r = sr.Recognizer() 
-        mic = sr.Microphone( sample_rate = sample_rate, chunk_size = chunk_size)
-        if 
-        r.listen_in_background(mic,self.backgroud)
+    #     r = sr.Recognizer() 
+    #     mic = sr.Microphone( sample_rate = sample_rate, chunk_size = chunk_size)
+    #     if (('hey' or 'hi' and 'Assistant') in text):
+    #         self.listen()
+    #     r.listen_in_background(mic,self.backgroud)
         
 
 if __name__ == "__main__":
