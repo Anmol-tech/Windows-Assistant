@@ -80,11 +80,16 @@ class Home_Form(object):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:14pt; font-weight:600;\">Windows Assistant</span></p></body></html>"))
+        self.status_box.setFontWeight(100)
+        self.status_box.setFontFamily('Arial')
+        self.status_box.setFontPointSize(8)
 
-        self.status_updater('Welcome to Windows Assistant')
-        self.status_updater('How may I help you ?')
-        self.status_updater('Enter your request in above box')
+        self.status_updater('󠁗Welcome')
+        self.status_updater('How may I help you ❓')
         
+        
+        
+
         # Button event
         self.tick_button.clicked.connect(self.read_input)
         self.mic_button.clicked.connect(self.listen_update)
@@ -137,7 +142,7 @@ class Home_Form(object):
             r.adjust_for_ambient_noise(source) 
             
             
-            # print ("Say Something")
+            print ("Say Something")
             audio = r.listen(source) 
                 
             try: 

@@ -9,7 +9,7 @@ class Task:
     def do(self, text: str):
         text = text.lower()
         text = text.split()
-        if 'open' in text:
+        if ('open' in text or 'run' in text  or 'start' in text):
             if 'notepad' in text:
                 os.system('start notepad')
                 return 'Starting Notepad'
@@ -32,20 +32,29 @@ class Task:
                 os.system('start brave')
                 return 'Starting Brave'
                 
-            elif 'InternetExplorer'  in text:
+            elif 'Internet Explorer'  in text :
                 os.system('start microsoftedge')
                 return 'Starting MicrosoftEdge'
+
+            elif 'vscode'  in text or 'visual studio code'  in text :
+                os.system('start code')
+                return 'Starting visual studio code'
+
+            elif 'my computer' in text or 'this pc' in text or 'explorer' in text:
+                os.system('start explorer')
+                return 'Starting explorer'
+            
+            elif 'map' in text:
+                webbrowser.open_new_tab('https://www.google.com/maps' )
+
             else:
-                
                 return "I don't understand it please tell properly what to open ? \N{thinking face}"
         
-        elif 'search' in text:
+        else:
             text = text [1:]
             text = ''.join([str(elem) for elem in text])
             webbrowser.open_new_tab('http://www.google.com/search?btnG=1&q=%s' %text)
-            return f'searching {text[-1]} on google \N{Globe with Meridians}'
-        else:
-            return "Unable to do task \N{Disappointed face}"
+            return f'searching {text} on google \N{Globe with Meridians}'
             
              
                 
